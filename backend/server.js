@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 connectDB();
 
-const allowedOrigins = ["http://localhost:5173"];
+const allowedOrigins = ['http://localhost:5173']
 
 app.use(express.json());
 app.use(cookieParser());
@@ -22,8 +22,8 @@ app.use(
 );
 
 // endpoints
-app.get("/", (req, res) => res.send("Hello World! API is running"));
-app.use("/api/auth", auth);
-app.use("/api/user", userRouter);
+app.get('/', (req, res) => res.send("Hello World! API is running"));
+app.use('/api/auth', auth);
+app.use('/api/user', userRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
