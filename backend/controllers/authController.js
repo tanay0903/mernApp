@@ -108,7 +108,12 @@ export const logout = async (req, res) => {
 // Send OTP for email verification
 export const sendVerfiyOtp = async (req, res) => {
     try{
-        const {userId} = req.body;
+        //const {userId} = req.body;
+        const userId = req.user?.id;
+
+        if (!userId) {
+        return res.status(401).json({ success: false, message: "Unauthorized request" });
+        }
         const user = await userModel.findById(userId);
         if(user.isAccountVerified) {
             return res.status(400).json({success:false, message: "Account already verified" });
@@ -136,8 +141,9 @@ export const sendVerfiyOtp = async (req, res) => {
 
 // Verify OTP for email verification
 export const verifyEmail = async (req, res) => {
-    const {userId, otp } = req.body;
-
+    //const {userId, otp } = req.body;
+    const userId = req.user?.id;
+    const { otp } = req.body;
     if (!userId || !otp) {
         return res.status(400).json({success:false, message: "User ID and OTP are required" });
     }
