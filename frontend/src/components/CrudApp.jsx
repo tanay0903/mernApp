@@ -159,8 +159,8 @@ function CrudApp() {
 
   return (
   <div className="flex justify-center items-center min-h-screen bg-gray-50 p-4">
-    <Box sx={{ maxWidth: "1000px", margin: "auto", padding: "2rem" }}>
-      <h2 className="text-2xl font-semibold mb-6">CRUD User Manager</h2>
+    <Box sx={{ maxWidth: "1000px", margin: "auto", padding: "2rem" , maxHeight: "2000px"}}>
+      <h2 className="text-2xl flex justify-center items-center font-semibold mb-6">Employee Managerment System</h2>
 
       <TextField
         label="Search by Name, Email or Job Title"

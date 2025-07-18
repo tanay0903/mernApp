@@ -7,6 +7,7 @@ const managedUserSchema = new mongoose.Schema(
     email: {type: String,required: true, unique: true},
     gender: {type: String,required: true},
     job_title: {type: String,required: true},
+    isDeleted: {type: Boolean, default: false }
   },
   { timestamps: true }
 );

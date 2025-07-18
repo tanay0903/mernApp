@@ -5,16 +5,19 @@ export const getUsers = async (req, res) => {
   const search = req.query.search?.toLowerCase();
 
   try {
+    const baseFilter = { isDeleted: false };
+
     const query = search
       ? {
-        $or: [
-          { first_name: { $regex: search, $options: "i" } },
-          { last_name: { $regex: search, $options: "i" } },
-          { email: { $regex: search, $options: "i" } },
-          { job_title: { $regex: search, $options: "i" } },
-        ],
-      }
-      : {};
+          ...baseFilter,
+          $or: [
+            { firstName: { $regex: search, $options: "i" } },
+            { lastName: { $regex: search, $options: "i" } },
+            { email: { $regex: search, $options: "i" } },
+            { jobTitle: { $regex: search, $options: "i" } },
+          ],
+        }
+      : baseFilter;
 
     const users = await ManagedUser.find(query);
     res.status(200).json(users);
@@ -35,14 +38,18 @@ export const createUser = async (req, res) => {
 };
 
 // PATCH update user
-// controllers/managedUserController.js
 
 export const updateUser = async (req, res) => {
   try {
     const { email, ...updates } = req.body;
 
     if (!email) {
-      return res.status(400).json({ success: false, message: "Email is required to identify the user." });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Email is required to identify the user.",
+        });
     }
 
     delete updates._id; // Prevent accidental _id update
@@ -53,7 +60,9 @@ export const updateUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     res.json({ success: true, message: "User updated", user });
@@ -66,13 +75,27 @@ export const updateUser = async (req, res) => {
 // DELETE user
 export const deleteUser = async (req, res) => {
   try {
-    const user = await ManagedUser.findByIdAndDelete(req.params.id);
-    if (!user)
+    const userId = req.params.id;
+
+    const deletedUser = await ManagedUser.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true }
+    );
+
+    if (!deletedUser) {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
-    res.json({ success: true, message: "User deleted" });
+    }
+
+    res.json({
+      success: true,
+      message: "User soft deleted",
+      user: deletedUser,
+    });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    console.error("Delete error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
