@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongo.js";
 import auth from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import managedUserRoutes from './routes/managedUserRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,5 +26,6 @@ app.use(
 app.get('/', (req, res) => res.send("Hello World! API is running"));
 app.use('/api/auth', auth);
 app.use('/api/user', userRouter);
+app.use("/api/managed-users", managedUserRoutes);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
